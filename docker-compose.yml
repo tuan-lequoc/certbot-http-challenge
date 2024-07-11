@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/nginx.conf.template
+      - ./start_nginx.sh:/docker-entrypoint.d/start_nginx.sh
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: ["/docker-entrypoint.d/start_nginx.sh"]
+    depends_on:
+      - certbot
+    environment:
+      - DOMAIN=${DOMAIN}
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: >
+      /bin/sh -c 'trap exit TERM; while :; do 
+      certbot certonly --webroot -w /var/www/certbot 
+      --email ${EMAIL} --agree-tos --no-eff-email 
+      --force-renewal -d ${DOMAIN}; 
+      sleep ${RENEW_INTERVAL} & wait $${!}; 
+      done;'
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+      - RENEW_INTERVAL=${RENEW_INTERVAL}
