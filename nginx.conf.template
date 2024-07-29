@@ -10,45 +10,53 @@ http {
             root /var/www/certbot;
         }
 
-        location / {
-            return 301 https://__HOST__/__REQUEST_URI__;
-        }
+        # location / {
+        #     return 301 https://__HOST__/__REQUEST_URI__;
+        # }
     }
 
-    server {
-        listen 443      ssl http2;
-        listen [::]:443 ssl http2;
+    # server {
+    #     listen 443      ssl http2;
+    #     listen [::]:443 ssl http2;
         
-        server_name ${DOMAIN};
+    #     server_name ${DOMAIN};
 
-        ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    #     ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    #     ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_prefer_server_ciphers on;
-        ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384";
-        ssl_session_cache shared:SSL:10m;
-        ssl_session_timeout 1d;
+    #     ssl_protocols TLSv1.2 TLSv1.3;
+    #     ssl_prefer_server_ciphers on;
+    #     ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384";
+    #     ssl_session_cache shared:SSL:10m;
+    #     ssl_session_timeout 1d;
 
-        location /nextcloud {
-            proxy_pass http://localhost:8080;
-            proxy_set_header Host __HOST__;
-            proxy_set_header X-Real-IP __REMOTE_ADDR__;
-            proxy_set_header X-Forwarded-For __PROXY_ADD_X_FORWARDED_FOR__;
-            proxy_set_header X-Forwarded-Proto __SCHEME__;
-        }
+    #     location /nc {
+    #         proxy_pass http://172.18.0.1:11080;
+    #         proxy_set_header Host __HOST__;
+    #         proxy_set_header X-Real-IP __REMOTE_ADDR__;
+    #         proxy_set_header X-Forwarded-For __PROXY_ADD_X_FORWARDED_FOR__;
+    #         proxy_set_header X-Forwarded-Proto __SCHEME__;
+    #     }
 
-        location /zabbix {
-            proxy_pass http://localhost:5080;
-            proxy_set_header Host __HOST__;
-            proxy_set_header X-Real-IP __REMOTE_ADDR__;
-            proxy_set_header X-Forwarded-For __PROXY_ADD_X_FORWARDED_FOR__;
-            proxy_set_header X-Forwarded-Proto __SCHEME__;
-        }
+    #     location /zabbix {
+    #         proxy_pass http://172.18.0.1:5080;
+    #         proxy_set_header Host __HOST__;
+    #         proxy_set_header X-Real-IP __REMOTE_ADDR__;
+    #         proxy_set_header X-Forwarded-For __PROXY_ADD_X_FORWARDED_FOR__;
+    #         proxy_set_header X-Forwarded-Proto __SCHEME__;
+    #     }
 
-        location / {
-            root /usr/share/nginx/html;
-            index index.html;
-        }
-    }
+    #     location /etcdkeeper {
+    #         proxy_pass http://172.18.0.1:10080;
+    #         proxy_set_header Host __HOST__;
+    #         proxy_set_header X-Real-IP __REMOTE_ADDR__;
+    #         proxy_set_header X-Forwarded-For __PROXY_ADD_X_FORWARDED_FOR__;
+    #         proxy_set_header X-Forwarded-Proto __SCHEME__;
+    #     }
+
+    #     location / {
+    #         root /usr/share/nginx/html;
+    #         index index.html;
+    #     }
+    # }
 }
