@@ -12,6 +12,8 @@ services:
       - ./start_nginx.sh:/docker-entrypoint.d/start_nginx.sh
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/self-signed:/etc/nginx/self-signed
     entrypoint: ["/docker-entrypoint.d/start_nginx.sh"]
     depends_on:
       - certbot
